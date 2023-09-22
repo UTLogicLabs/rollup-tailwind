@@ -17,6 +17,8 @@ test('default', async (t) => {
   });
   const { output } = await bundle.generate({});
   const [, css] = output;
+
+  console.log(output)
   
   t.match(css.source, /\[hidden\]/, 'emits Tailwind stylesheet');
 });
