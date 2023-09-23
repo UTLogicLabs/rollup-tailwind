@@ -1,0 +1,37 @@
+name: Deploy rollup-tailwind to NPMjs
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Clean Install
+        run: npm ci
+      - name: Run Tests
+        run: npm test
+
+  publish-npm:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          registry-url: https://registry.npmjs.org/
+      - name: Clean Install
+        run: npm ci
+      - name: NPM Publish
+        run: npm publish --provenance --access  public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
